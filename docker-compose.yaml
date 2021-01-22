@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx/
+    ports:
+      - "8008:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/html/
+    links:
+      - php
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: ./docker/php/
+    hostname: fpm
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=database
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
