@@ -13,33 +13,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/register", name="app_register")
-     */
-    public function register(Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em)
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('home');
-        }
-
-        if (!$request->isMethod('POST')) {
-            return $this->render('security/register.html.twig', [
-                'error' => null,
-                'last_username' => null,
-                'last_email' => null,
-            ]);
-        }
-
-        $user = new User();
-        $user->setUsername($request->get('username'));
-        $user->setEmail($request->get('email'));
-        $user->setPassword($encoder->encodePassword($user, $request->get('password')));
-        $user->setRoles(['ROLE_USER']);
-        $em->persist($user);
-        $em->flush();
-
-        return $this->redirectToRoute('home');
-    }
 
     /**
      * @Route("/login", name="app_login")
